@@ -6,6 +6,7 @@ import com.fasterxml.jackson.annotation.JsonProperty;
 
 public record VersionResponse(
         @JsonProperty("id") VersionId id,
+        @JsonProperty("version_number") String versionNumber,
         @JsonProperty("platform") PlatformType platform,
         @JsonProperty("platformVersion") String platformVersion,
         @JsonProperty("buildNo") long buildNo,

@@ -27,10 +27,10 @@ public class AccountInfo extends BaseDTO {
     private String profileImageUrl;
     private int roleWeight = 0;
     private Set<KycTag> kycTags;
-    // private Set<AccountScope> scopes;
     private boolean acceptedTermAndConditions = false;
     private boolean emailConfirmed = false;
     public boolean phoneConfirmed;
+    private BankResponse bank;
 
     public int age() {
         if (isNull(this.nationalityInformation.getBirthDate())) return 0;
@@ -41,8 +41,4 @@ public class AccountInfo extends BaseDTO {
         return !this.kycTags.isEmpty() && this.kycTags.containsAll(kycTags);
     }
 
-    @JsonIgnore
-    public Bank getIbanNumberBank() {
-        return ibanNumber == null ? null : ibanNumber.getIbanNumberBank();
-    }
 }
