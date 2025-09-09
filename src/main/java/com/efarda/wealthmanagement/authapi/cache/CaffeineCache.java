@@ -8,7 +8,7 @@ import org.springframework.stereotype.Component;
 import java.time.Duration;
 
 @Component
-@Profile("dev")
+@Profile({"local", "dev"})
 public class CaffeineCache implements CacheService {
 
     private final LoadingCache<String, String> cache;

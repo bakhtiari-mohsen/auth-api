@@ -18,6 +18,5 @@ public interface AuthenticationClient {
     @PostMapping("/v1/authentication/authentication/token")
     ResponseEntity<TokenResponse> token(@Valid @RequestBody TokenRequest request);
 
-    @DeleteMapping("/v1/authentication/sign-out/{accountId}")
-    ResponseEntity<Void> logout(@PathVariable AccountId accountId);
+
 }
