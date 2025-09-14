@@ -13,7 +13,7 @@
 
     <groupId>com.efarda.wealthmanagement.auth</groupId>
     <artifactId>auth-api</artifactId>
-    <version>1.5.2</version>
+    <version>1.5.5</version>
 
     <properties>
         <java.version>21</java.version>
