@@ -2,6 +2,7 @@ package com.efarda.wealthmanagement.authapi.security;
 
 import jakarta.servlet.FilterChain;
 import jakarta.servlet.ServletException;
+import jakarta.servlet.http.Cookie;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import org.springframework.http.HttpHeaders;
@@ -14,6 +15,7 @@ import org.springframework.util.StringUtils;
 import org.springframework.web.filter.OncePerRequestFilter;
 
 import java.io.IOException;
+import java.util.Arrays;
 import java.util.Set;
 import java.util.regex.Pattern;
 
@@ -64,7 +66,7 @@ public class AccountAccessTokenAuthenticationFilter extends OncePerRequestFilter
     @Override
     protected void doFilterInternal(HttpServletRequest request, HttpServletResponse response, FilterChain filterChain)
             throws ServletException, IOException {
-        final var token = searchForTokenInHeaders(request);
+        final var token = searchForToken(request);
         if (!StringUtils.hasText(token)) {
             authenticationFailureHandler.onAuthenticationFailure(request, response);
             return;
@@ -83,6 +85,17 @@ public class AccountAccessTokenAuthenticationFilter extends OncePerRequestFilter
         }
     }
 
+    private @Nullable String searchForToken(HttpServletRequest request) {
+        final var headerToken = searchForTokenInHeaders(request);
+        final var cookieToken = searchForTokenInCookie(request);
+
+        if (StringUtils.hasText(headerToken)) return headerToken;
+
+        if (StringUtils.hasText(cookieToken)) return cookieToken;
+
+        return null;
+    }
+
     private @Nullable String searchForTokenInHeaders(HttpServletRequest request) {
         for (final var header : headersForSearchingToken) {
             final var token = extractToken(request, header);
@@ -90,6 +103,23 @@ public class AccountAccessTokenAuthenticationFilter extends OncePerRequestFilter
         }
 
         return null;
+    }
+
+    private @Nullable String searchForTokenInCookie(HttpServletRequest request) {
+        for (final var header : headersForSearchingToken) {
+            final var token = extractTokenFromCookie(request, header);
+            if (StringUtils.hasText(token)) return token;
+        }
+
+        return null;
+    }
+
+    private @Nullable String extractTokenFromCookie(HttpServletRequest request, String header) {
+        return Arrays.stream(request.getCookies())
+                .filter(cookie -> cookie.getName().equals(header))
+                .findFirst()
+                .map(Cookie::getValue)
+                .orElse(null);
     }
 
     private @Nullable String extractToken(HttpServletRequest request, String header) {
